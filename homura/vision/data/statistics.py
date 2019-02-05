@@ -43,9 +43,9 @@ class PerChannelStatistics(object):
         image_paths = []
         for ext in ImageFolder.IMG_EXTENSIONS:
             # *.jpg ...
-            image_paths += list(root.glob(f"**/*.{ext}"))
+            image_paths += list(root.glob(f"**/*{ext}"))
             # *.JPG ...
-            image_paths += list(root.glob(f"**/*.{ext.capitalize()}"))
+            image_paths += list(root.glob(f"**/*{ext.capitalize()}"))
 
         if len(image_paths) < self._num_samples:
             raise RuntimeError(f"Need more than {self._num_samples} samples but {len(image_paths)}")
