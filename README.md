@@ -2,7 +2,7 @@
 
 *Homura* is a support tool for research experiments.
 
-*Homura* is *flame* or *blaze* in Japanese. 🔥🔥🔥🔥
+*Homura* is *flame* or *blaze* in Japanese.
 
 ## Requirements
 
