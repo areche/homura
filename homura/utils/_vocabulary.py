@@ -12,6 +12,7 @@ OUTPUT = "output"
 TARGET = "target"
 TEST = "test"
 TRAIN = "train"
+INFERENCE = "inference"
 TRAINER = "trainer"
 STEP = "step"
 NOW = datetime.now().strftime("%b%d-%H-%M-%S")
