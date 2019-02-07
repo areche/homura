@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader
 from ._miscs import check_path
 from ._vocabulary import *
 from .callbacks import Callback
-from .containers import Map
+from .containers import TensorTuple, Map
 from .runner import Runner
 from tqdm import tqdm
 
@@ -74,7 +74,7 @@ class Inferencer(Runner):
         for step, data in enumerate(data_loader):
             iter_map = Map(mode=self.mode, step=step)
             self._callbacks.before_iteration(iter_map)
-            output_map = self._iteration(input)
+            output_map = self._iteration(TensorTuple(data))
             output_map[INPUTS] = data
             output_map.update(iter_map)
             self._callbacks.after_iteration(output_map)
