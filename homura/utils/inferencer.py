@@ -15,7 +15,7 @@ from tqdm import tqdm
 
 
 class Inferencer(Runner):
-    mode = "inference"
+    mode = INFERENCE
 
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
                  callbacks: Callback or Iterable[Callback] = None,
