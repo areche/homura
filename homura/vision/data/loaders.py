@@ -77,7 +77,7 @@ def cifar100_loaders(batch_size, num_workers=1, root="~/.torch/data/cifar100", d
 
 
 def imagenet_loaders(root, batch_size, num_workers=8, data_augmentation=None, num_train_samples=None,
-                     num_test_samples=None, distributed=False):
+                     num_test_samples=None, distributed=False, mean_dev=((0.485, 0.456, 0.406), (0.229, 0.224, 0.225))):
     import torch
 
     if distributed:
@@ -85,7 +85,7 @@ def imagenet_loaders(root, batch_size, num_workers=8, data_augmentation=None, nu
     if data_augmentation is None:
         data_augmentation = [transforms.RandomResizedCrop(224), transforms.RandomHorizontalFlip()]
     tt_transform = [transforms.Resize(256), transforms.CenterCrop(224)]
-    _base = _BaseLoaders(ImageFolder, ((0.485, 0.456, 0.406), (0.229, 0.224, 0.225)), data_augmentation, tt_transform,
+    _base = _BaseLoaders(ImageFolder, mean_dev, data_augmentation, tt_transform,
                          distributed=distributed)
     root = _BaseLoaders.check_root_exists(root)
     train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=True,
