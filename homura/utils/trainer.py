@@ -244,7 +244,10 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         with path.open('rb') as f:
             loaded = torch.load(f)
 
-        self.model.load_state_dict(loaded[MODEL])
+        if isinstance(self.model, nn.DataParallel):
+            self.model.module.load_state_dict(loaded[MODEL])
+        else:
+            self.model.load_state_dict(loaded[MODEL])
         self.optimizer.load_state_dict(loaded[OPTIMIZER])
         self._step = loaded[STEP]
         self._epoch = loaded[EPOCH]
