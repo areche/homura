@@ -201,6 +201,12 @@ class WeightSave(Callback):
         if not self.save_path.exists():
             self.save_path.mkdir(parents=True)
 
+    def __del__(self):
+        list_of_files = self.save_path.rglob("*")
+        files = sum(1 for i in list_of_files)
+        if files == 0:
+           self.save_path.rmdir()
+
     def after_epoch(self, data: Mapping):
         if data[EPOCH] % self.save_freq == 0:
             try:
