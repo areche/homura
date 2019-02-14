@@ -85,3 +85,9 @@ class Inferencer(Runner):
     def test(self, data_loader: DataLoader):
         # compatible with Trainer
         self.run(data_loader)
+        
+    def set_parallel(self):
+        if not isinstance(self.model, nn.DataParallel):
+            self.model = nn.DataParallel(self.model)
+            self.model.to(self.device)
+
