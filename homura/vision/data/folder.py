@@ -11,7 +11,7 @@ def has_allowed_extension(file: Path, extensions: Iterable[str]):
 
 
 def find_classes(root: Path):
-    classes = [d for d in root.iterdir() if d.is_dir()]
+    classes = [d.name for d in root.iterdir() if d.is_dir()]
     classes.sort()
     class_to_idx = {d: i for i, d in enumerate(classes)}
     return classes, class_to_idx
@@ -21,7 +21,7 @@ def make_dataset(root: Path, class_to_idx: Dict[str, int], extensions: Iterable[
     images = []
     for d in [d for d in root.iterdir() if d.is_dir()]:
         for f in [f for f in d.iterdir() if has_allowed_extension(f, extensions)]:
-            images.append((d / f, class_to_idx[d]))
+            images.append((d / f, class_to_idx[d.name]))
     return images
 
 
