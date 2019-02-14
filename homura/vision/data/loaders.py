@@ -91,4 +91,11 @@ def imagenet_loaders(root, batch_size, num_workers=8, data_augmentation=None, nu
     train_loader, test_loader = _base(batch_size=batch_size, num_workers=num_workers, shuffle=True,
                                       train_set_kwargs=dict(root=(root / "train"), num_samples=num_train_samples),
                                       test_set_kwargs=dict(root=(root / "val"), num_samples=num_test_samples))
+    
+    for cl, index in train_loader.dataset.class_to_index.items():
+        if cl in test_loader.dataset.class_to_index:
+            test_index = test_loader.dataset.class_to_index[cl]
+            if test_index != index:
+                raise Exception("Class index different between train (class: {} - index: {}) and test (index: {} - class in train: {})".format(cl, index, test_index, train_loader.dataset.classes[test_index]))
+
     return train_loader, test_loader
