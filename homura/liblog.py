@@ -3,6 +3,13 @@
 import logging
 from typing import Optional, TextIO
 
+try:
+    import colorlog
+
+    _has_colorlog = True
+except ImportError:
+    _has_colorlog = False
+
 # private APIs
 _LOG_LEVEL = {"debug": logging.DEBUG,
               "info": logging.INFO,
@@ -18,7 +25,11 @@ def _name() -> str:
 
 
 def _create_default_formatter() -> logging.Formatter:
-    return logging.Formatter("[%(name)s|%(asctime)s|%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
+    datefmt = "%Y-%m-%d %H:%M:%S"
+    if _has_colorlog:
+        return colorlog.ColoredFormatter('%(log_color)s[%(name)s|%(asctime)s|%(levelname)s] %(message)s',
+                                         datefmt=datefmt)
+    return logging.Formatter("[%(name)s|%(asctime)s|%(levelname)s] %(message)s", datefmt=datefmt)
 
 
 def _get_root_logger() -> logging.Logger:
@@ -94,3 +105,31 @@ def set_file_handler(log_file: str or TextIO, level: str or int = logging.DEBUG,
         formatter = _create_default_formatter()
     fh.setFormatter(formatter)
     _get_root_logger().addHandler(fh)
+
+
+def _set_tqdm_handler(level: str or int = logging.INFO,
+                      formatter: Optional[logging.Formatter] = None) -> None:
+    """ An alternative handler to avoid disturbing tqdm
+    """
+    from tqdm import tqdm
+
+    class TQDMHandler(logging.StreamHandler):
+        def __init__(self):
+            logging.StreamHandler.__init__(self)
+
+        def emit(self, record):
+            msg = self.format(record)
+            tqdm.write(msg)
+
+    _configure_root_logger()
+    th = TQDMHandler()
+    if isinstance(level, str):
+        level = _LOG_LEVEL[level]
+    th.setLevel(level)
+    if _default_handler is not None:
+        # to avoid multiple logs!
+        _get_root_logger().removeHandler(_default_handler)
+    if formatter is None:
+        formatter = _create_default_formatter()
+    th.setFormatter(formatter)
+    _get_root_logger().addHandler(th)

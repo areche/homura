@@ -1,3 +1,5 @@
 from .attention import KeyValAttention
 from .conditional_batchnorm import CategoricalConditionalBatchNorm
-from .straight_backprop import straight_backprop
+from .discretization import *
+from .functional import to_onehot
+from .regularizer import WSConv2d, weight_standardization, convert_ws

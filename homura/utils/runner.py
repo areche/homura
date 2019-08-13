@@ -5,19 +5,20 @@ from typing import Callable, Iterable, Dict, Optional
 import torch
 from torch import nn
 
+from homura.callbacks import CallbackList, Callback
 from homura.liblog import get_logger
 from ._vocabulary import *
-from .reporter.callbacks import CallbackList, Callback
 
 
 class Runner(metaclass=ABCMeta):
+    """Meta-class for Trainer and Inferencer
+    """
 
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
                  callbacks: Optional[Callback or Iterable[Callable]] = None,
                  device: torch.device or str = None,
                  use_cudnn_benchmark=True, use_cuda_nonblocking=False, logger: Optional[Logger] = None, **kwargs):
-        """Meta-class for Trainer and Inferencer
-        """
+
         self.logger = get_logger(__name__) if logger is None else logger
         if device is None:
             self.device = GPU if torch.cuda.is_available() else CPU
@@ -42,6 +43,9 @@ class Runner(metaclass=ABCMeta):
             self._cuda_nonblocking = use_cuda_nonblocking
             self.logger.debug(
                 f"cuda: True, cudnn.benchmark: {use_cudnn_benchmark}, nonblocking: {use_cuda_nonblocking}")
+        else:
+            self._cuda_nonblocking = False
+            self.logger.info("Running on CPU!")
 
         # set callback(s)
         if isinstance(callbacks, CallbackList):
@@ -62,4 +66,6 @@ class Runner(metaclass=ABCMeta):
         for k, v in kwargs.items():
             if hasattr(self, k):
                 raise AttributeError(f"{self} already has {k}")
+            if torch.is_tensor(v):
+                v.to(self.device)
             setattr(self, k, v)
