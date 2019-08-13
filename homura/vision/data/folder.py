@@ -11,7 +11,7 @@ def _has_allowed_extension(file: Path, extensions: Iterable[str]):
     return file.suffix.lower() in extensions
 
 
-def find_classes(root: Path):
+def _find_classes(root: Path):
     classes = [d.name for d in root.iterdir() if d.is_dir()]
     classes.sort()
     class_to_idx = {d: i for i, d in enumerate(classes)}
