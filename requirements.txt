@@ -1,3 +1,4 @@
 tqdm
 tensorboard
 future
+torch==1.2
