@@ -21,7 +21,7 @@ def _find_classes(root: Path):
 def _make_dataset(root: Path, class_to_idx: Dict[str, int], extensions: Iterable[str]):
     images = []
     for d in [d for d in root.iterdir() if d.is_dir()]:
-        for f in [f for f in d.iterdir() if has_allowed_extension(f, extensions)]:
+        for f in [f for f in d.iterdir() if _has_allowed_extension(f, extensions)]:
             images.append((d / f, class_to_idx[d.name]))
     return images
 
