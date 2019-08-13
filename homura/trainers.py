@@ -302,7 +302,10 @@ class TrainerBase(Runner, metaclass=ABCMeta):
         with path.open('rb') as f:
             loaded = torch.load(f)
 
-        self.model.load_state_dict(loaded[MODEL])
+        if isinstance(self.model, nn.DataParallel):
+            self.model.module.load_state_dict(loaded[MODEL])
+        else:
+            self.model.load_state_dict(loaded[MODEL])
         if loaded.get(OPTIMIZER) is not None:
             self.optimizer.load_state_dict(loaded[OPTIMIZER])
         if loaded.get(SCHEDULER) is not None:
