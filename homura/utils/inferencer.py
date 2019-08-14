@@ -18,7 +18,7 @@ class Inferencer(Runner):
     """ Runner for inference only.
     """
 
-    mode = "inference"
+    mode = INFERENCE
 
     def __init__(self, model: nn.Module or Dict[str, nn.Module],
                  callbacks: Callback or Iterable[Callback] = None,
@@ -77,6 +77,7 @@ class Inferencer(Runner):
         for step, data in enumerate(data_loader):
             iter_map = Map(mode=self.mode, step=step)
             self._callbacks.before_iteration(iter_map)
+            data = TensorTuple(data).to(self.device, non_blocking=self._cuda_nonblocking)
             output_map = self._iteration(data)
             output_map[DATA] = data
             output_map.update(iter_map)
